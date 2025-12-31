@@ -597,10 +597,33 @@ searchInput.addEventListener("input", () => {
     searchTimeout = setTimeout(() => searchBeatmaps(query), 300)
 })
 
+let currentStatus = "all"
+
+const statusButtons = document.querySelectorAll(".status-btn")
+const indicator = document.getElementById("statusIndicator")
+
+function moveIndicator(btn) {
+    indicator.style.width = btn.offsetWidth - 9 + "px"
+    indicator.style.transform = `translateX(${btn.offsetLeft}px)`
+}
+
+statusButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        currentStatus = btn.dataset.status
+        moveIndicator(btn)
+
+        if (searchInput.value.trim()) {
+            searchBeatmaps(searchInput.value.trim())
+        }
+    })
+})
+
+requestAnimationFrame(() => moveIndicator(statusButtons[0]))
+
 async function searchBeatmaps(query) {
     const url =
         `https://us-central1-rhythm-typer.cloudfunctions.net/api/getBeatmaps` +
-        `?limit=50&status=all&sortBy=uploaded&showExplicit=true&language=all&search=${encodeURIComponent(query)}`
+        `?limit=50&status=${currentStatus}&sortBy=uploaded&showExplicit=true&language=all&search=${encodeURIComponent(query)}`
 
     let data
     try {
@@ -615,7 +638,6 @@ async function searchBeatmaps(query) {
         const card = document.createElement("div");
         card.className = "relative rounded-2xl overflow-hidden mb-4";
 
-        // Initial fallback background
         const bg = document.createElement("div");
         bg.className = "absolute inset-0 bg-cover bg-center filter brightness-50 transition-all duration-300";
         bg.style.backgroundColor = "rgba(50, 50, 50, 0.7)"; // fallback
@@ -642,7 +664,6 @@ async function searchBeatmaps(query) {
         card.append(bg, content)
         resultsContainer.appendChild(card)
 
-        // CLICK = LOAD AS UPLOADED FILE
         card.addEventListener("click", async () => {
             try {
                 const rtmUrl =

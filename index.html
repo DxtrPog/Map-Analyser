@@ -11,9 +11,6 @@
     <div class="max-w-4xl mx-auto">
         <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-white/20">
             <h1 class="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 002-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                </svg>
                 RT Map Analyser
             </h1>
             <p class="text-blue-200 mb-6">Upload your .rtm chart file, then select your difficulty and desired mods to calculate performance points</p>
@@ -30,14 +27,66 @@
             </label>
             
             <div id="searchContainer" style="margin-top: 20px; width: 100%; text-align: center;">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search for maps..."
-                    class="w-full bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500"
-                    style="height: 35px; border-radius: 30px; text-align: center; font-size: 1.125rem;"
-                />
-                <div id="searchResults" class="mt-2 text-white space-y-1" style="margin-top: 20px;"></div>
+                <div style="display:flex; align-items:center; gap:12px; width:100%;">
+
+                    <!-- Pill switch -->
+                    <div id="statusSwitch"
+                        style="
+                            position: relative;
+                            display: flex;
+                            height: 36px;
+                            border-radius: 999px;
+                            background: rgba(255,255,255,0.12);
+                            backdrop-filter: blur(10px);
+                            padding: 4px;
+                            flex-shrink: 0;
+                        ">
+
+                        <!-- Sliding pill -->
+                        <div id="statusIndicator"
+                            style="
+                                position: absolute;
+                                top: 4px;
+                                bottom: 4px;
+                                left: 4px;
+                                width: 0;
+                                border-radius: 999px;
+                                background: #22c55e;
+                                transition: transform 0.3s ease, width 0.3s ease;
+                            ">
+                        </div>
+
+                        <style>
+                            .status-btn {
+                                position: relative;
+                                z-index: 2;
+                                border: none;
+                                background: none;
+                                color: white;
+                                font-size: 14px;
+                                padding: 0 14px;
+                                height: 100%;
+                                cursor: pointer;
+                                white-space: nowrap;
+                            }
+                        </style>
+
+                        <button data-status="all" class="status-btn">All</button>
+                        <button data-status="ranked" class="status-btn">Ranked</button>
+                        <button data-status="unranked" class="status-btn">Unranked</button>
+                    </div>
+
+                    <!-- Search input -->
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Search for maps..."
+                        class="w-full bg-white/10 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500"
+                        style="height: 36px; border-radius: 999px; text-align: center; font-size: 1.125rem;"
+                    />
+                </div>
+
+                <div id="searchResults" class="mt-4" style="margin-top: 20px;"></div>
             </div>
         </div>
     </div>
