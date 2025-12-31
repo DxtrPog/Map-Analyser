@@ -341,12 +341,10 @@ function calculateMaxScore() {
     
     maxScore *= modMultiplier
 
-    console.log('Max Score:', Math.floor(maxScore))
-
     return { maxScore: Math.round(maxScore) }
 }
 
-function updateResults(mod = 'none') {
+function updateResults() {
     if (!mapData) return
 
     const { accuracy } = calculateAccuracy()
@@ -354,15 +352,15 @@ function updateResults(mod = 'none') {
 
     const diffData = getParsedDifficultyData()
     
-    if (mod === 'nc') {
+    if (currentMod === 'nc') {
         diffData.overallDifficulty = (80 - diffData.overallDifficulty*6) / 1.5
         diffData.overallDifficulty = (diffData.overallDifficulty - 80) / -6
         diffData.notes.forEach(note => {
-            if (note.time !== undefined) note.time /= 1.5;
-            if (note.startTime !== undefined) note.startTime /= 1.5;
-            if (note.endTime !== undefined) note.endTime /= 1.5;
+            if (note.time !== undefined) note.time *= 1.5;
+            if (note.startTime !== undefined) note.startTime *= 1.5;
+            if (note.endTime !== undefined) note.endTime *= 1.5;
         });
-    } else if (mod === 'ht') {
+    } else if (currentMod === 'ht') {
         diffData.overallDifficulty = (80 - diffData.overallDifficulty*6) / 0.75
         diffData.overallDifficulty = Math.max((diffData.overallDifficulty - 80) / -6,0)
         diffData.notes.forEach(note => {
@@ -372,10 +370,8 @@ function updateResults(mod = 'none') {
         });
     }
     
-    console.log(diffData)
     diffData.accuracy = accuracy;
     const pp = calculatePP(diffData)
-    console.log("PP: " + pp)
     ppValue.textContent = Math.round(pp)
 }
 
@@ -525,7 +521,7 @@ function calculateStars(scoreData) {
     return core * lenBonus * odBonus * STAR_SCALE;
 }
 
-function updateStarRating(mod = 'none') {
+function updateStarRating() {
     if (!selectedDifficulty) return
 
     const diffData = getParsedDifficultyData()
@@ -539,7 +535,7 @@ function updateStarRating(mod = 'none') {
         return
     }
 
-    if (mod === 'nc') {
+    if (currentMod === 'nc') {
         diffData.overallDifficulty = (80 - diffData.overallDifficulty*6) / 1.5
         diffData.overallDifficulty = (diffData.overallDifficulty - 80) / -6
         diffData.notes.forEach(note => {
@@ -547,7 +543,7 @@ function updateStarRating(mod = 'none') {
             if (note.startTime !== undefined) note.startTime /= 1.5;
             if (note.endTime !== undefined) note.endTime /= 1.5;
         });
-    } else if (mod === 'ht') {
+    } else if (currentMod === 'ht') {
         diffData.overallDifficulty = (80 - diffData.overallDifficulty*6) / 0.75
         diffData.overallDifficulty = Math.max((diffData.overallDifficulty - 80) / -6,0)
         diffData.notes.forEach(note => {
@@ -600,8 +596,8 @@ function setMod(mod) {
         modHTBtn.classList.add('bg-orange-500')
     }
 
-    updateResults(mod)
-    updateStarRating(mod)
+    updateResults()
+    updateStarRating()
 }
 
 function playAudio() {
