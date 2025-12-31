@@ -243,7 +243,7 @@ function calculatePP(scoreData) {
     }
 
     const notes = convertedNotes;
-    const od = scoreData.overallDifficulty;
+    const od = Math.min(10, Math.max(0, scoreData.overallDifficulty ?? 0)); // stops it from going below or above the OD limits :3
     const acc = scoreData.accuracy / 100;
   
     const MIN_DT = 0.04;
@@ -440,7 +440,7 @@ function calculateStars(scoreData) {
     }
 
     const notes = convertedNotes;
-    const od = scoreData.overallDifficulty;
+    const od = Math.min(10, Math.max(0, scoreData.overallDifficulty ?? 0)); // stops it from going below or above the OD limits :3
   
     const MIN_DT = 0.04;
     const ALPHA = 0.85;
