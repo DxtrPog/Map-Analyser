@@ -85,7 +85,7 @@ async function extractMetaAndFiles(zip) {
             continue
         }
 
-        const isBinary = /\.(png|jpg|jpeg|gif|mp3|ogg|wav)$/i.test(name)
+        const isBinary = /\.(png|jpg|jpeg|gif|webp|mp3|ogg|wav)$/i.test(name)
         const content = await entry.async(isBinary ? "blob" : "text")
 
         files.push({ name, type: isBinary ? "binary" : "text", content })
@@ -380,17 +380,43 @@ function updateResults(mod = 'none') {
 }
 
 function setResultScreen(meta, files) {
-    if (!meta.backgroundFiles?.length || !meta.backgroundFiles?.length || !meta?.songName || !meta.artistName ) return
+    bgDiv.style.backgroundImage = "none";
+    bgDiv.style.backgroundColor = "#000";
 
-    const bgFile = meta.backgroundFiles[0]
-    const bgBlob = files.find(f => f.name === bgFile)?.content
-    if (!bgBlob) return
+    if (meta?.songName) {
+        songNameEl.textContent = meta.songName;
+    }
+    if (meta?.artistName) {
+        songAuthorEl.textContent = `By ${meta.artistName}`;
+    }
 
-    const bgUrl = URL.createObjectURL(bgBlob)
-    bgDiv.style.backgroundImage = `url('${bgUrl}')`
-    
-    songNameEl.textContent = meta.songName
-    songAuthorEl.textContent = `By ${meta.artistName}`
+    if (!meta?.backgroundFiles?.length) {
+        console.warn("No background image specified, using black background");
+        return;
+    }
+
+    const bgFileName = meta.backgroundFiles[0];
+
+    const bgFile = files.find(
+        f => f.name === bgFileName && f.type === "binary"
+    );
+
+    // If file missing or invalid, keep black background
+    if (!bgFile || !(bgFile.content instanceof Blob)) {
+        console.warn("Background file missing or invalid:", bgFileName);
+        return;
+    }
+
+    try {
+        const bgUrl = URL.createObjectURL(bgFile.content);
+        bgDiv.style.backgroundImage = `url('${bgUrl}')`;
+        bgDiv.style.backgroundSize = "cover";
+        bgDiv.style.backgroundPosition = "center";
+    } catch (err) {
+        console.warn("Failed to apply background image, using black:", err);
+        bgDiv.style.backgroundImage = "none";
+        bgDiv.style.backgroundColor = "#000";
+    }
 }
 
 function setChartMapper(meta) {
